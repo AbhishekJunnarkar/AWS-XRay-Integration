@@ -35,6 +35,12 @@ The AWS X-Ray daemon is a software application that listens for traffic on UDP p
 
 ## What is a Segment and Subsegment
 
+A segment document conveys information about a segment to X-Ray. A segment document can be up to 64 kB and contain a whole segment with subsegments, a fragment of a segment that indicates that a request is in progress, or a single subsegment that is sent separately. You can send segment documents directly to X-Ray by using the PutTraceSegments API.
+
+X-Ray compiles and processes segment documents to generate queryable trace summaries and full traces that you can access by using the GetTraceSummaries and BatchGetTraces APIs, respectively. In addition to the segments and subsegments that you send to X-Ray, the service uses information in subsegments to generate inferred segments and adds them to the full trace. Inferred segments represent downstream services and resources in the service map.
+
+A subset of segment fields is indexed by X-Ray for use with filter expressions. For example, if you set the user field on a segment to a unique identifier, you can search for segments associated with specific users in the X-Ray console or by using the GetTraceSummaries API.
+
 A segment can break down the data about the work done into subsegments. Subsegments provide more granular timing information and details about downstream calls that your application made to fulfill the original request. A subsegment can contain additional details about a call to an AWS service, an external HTTP API, or an SQL database. You can even define arbitrary subsegments to instrument specific functions or lines of code in your application.
 
 Subsegments represent your application's view of a downstream call as a client. If the downstream service is also instrumented, the segment that it sends replaces the inferred segment generated from the upstream client's subsegment. The node on the service graph always uses information from the service's segment, if it's available, while the edge between the two nodes uses the upstream service's subsegment.
@@ -42,6 +48,26 @@ Subsegments represent your application's view of a downstream call as a client. 
 - Segments and subsegments can include a metadata object containing one or more fields with values of any type, including objects and arrays.
 
 - Segments and subsegments can include an annotations object containing one or more fields that X-Ray indexes for use with filter expressions.
+
+Below are the optional subsegment fields:
+
+- namespace - aws for AWS SDK calls; remote for other downstream calls.
+
+- http - http object with information about an outgoing HTTP call.
+
+- aws - aws object with information about the downstream AWS resource that your application called.
+
+- error, throttle, fault, and cause - error fields that indicate an error occurred and that include information about the exception that caused the error.
+
+- annotations - annotations object with key-value pairs that you want X-Ray to index for search.
+
+- metadata - metadata object with any additional data that you want to store in the segment.
+
+- subsegments - array of subsegment objects.
+
+- precursor_ids - array of subsegment IDs that identify subsegments with the same parent that was completed prior to this subsegment.
+
+You can use the "metadata" field in the segment section to add custom data for your tracing. If you want to trace all the AWS SDK calls of your application, then you can add a subsegment and set the "namespace" field to "AWS". Alternatively, you can set the "namespace" value to "remote" if you want to trace other downstream calls.
 
 ## **Conclusion**
 AWS X-Ray empowers developers and DevOps teams to proactively monitor and optimize their applications, ultimately improving reliability and delivering better user experiences. By providing a detailed view of application performance, it enables businesses to swiftly identify and address issues, ensuring that their applications run smoothly even under high loads.
