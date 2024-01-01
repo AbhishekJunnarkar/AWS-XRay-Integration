@@ -33,6 +33,16 @@ The AWS X-Ray daemon is a software application that listens for traffic on UDP p
 - The correct steps to properly instrument the application is to create a Docker image that runs the X-Ray daemon, upload it to a Docker image repository, and then deploy it to your Amazon ECS cluster.
 - In addition, you also have to configure the port mappings and network mode settings in your task definition file to allow traffic on UDP port 2000.
 
+## What is a Segment and Subsegment
+
+A segment can break down the data about the work done into subsegments. Subsegments provide more granular timing information and details about downstream calls that your application made to fulfill the original request. A subsegment can contain additional details about a call to an AWS service, an external HTTP API, or an SQL database. You can even define arbitrary subsegments to instrument specific functions or lines of code in your application.
+
+Subsegments represent your application's view of a downstream call as a client. If the downstream service is also instrumented, the segment that it sends replaces the inferred segment generated from the upstream client's subsegment. The node on the service graph always uses information from the service's segment, if it's available, while the edge between the two nodes uses the upstream service's subsegment.
+
+- Segments and subsegments can include a metadata object containing one or more fields with values of any type, including objects and arrays.
+
+- Segments and subsegments can include an annotations object containing one or more fields that X-Ray indexes for use with filter expressions.
+
 ## **Conclusion**
 AWS X-Ray empowers developers and DevOps teams to proactively monitor and optimize their applications, ultimately improving reliability and delivering better user experiences. By providing a detailed view of application performance, it enables businesses to swiftly identify and address issues, ensuring that their applications run smoothly even under high loads.
 
