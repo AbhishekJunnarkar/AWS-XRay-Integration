@@ -69,6 +69,19 @@ Below are the optional subsegment fields:
 
 You can use the "metadata" field in the segment section to add custom data for your tracing. If you want to trace all the AWS SDK calls of your application, then you can add a subsegment and set the "namespace" field to "AWS". Alternatively, you can set the "namespace" value to "remote" if you want to trace other downstream calls.
 
+## How AWS Lambda communicates with Amazon X-Ray
+AWS Lambda uses environment variables to facilitate communication with the X-Ray daemon and configure the X-Ray SDK.
+
+- _X_AMZN_TRACE_ID: Contains the tracing header, which includes the sampling decision, trace ID, and parent segment ID. If Lambda receives a tracing header when your function is invoked, that header will be used to populate the _X_AMZN_TRACE_ID environment variable. If a tracing header was not received, Lambda will generate one for you.
+
+- AWS_XRAY_CONTEXT_MISSING: The X-Ray SDK uses this variable to determine its behavior in the event that your function tries to record X-Ray data, but a tracing header is not available. Lambda sets this value to LOG_ERROR by default.
+
+- AWS_XRAY_DAEMON_ADDRESS: This environment variable exposes the X-Ray daemon's address in the following format: IP_ADDRESS:PORT. You can use the X-Ray daemon's address to send trace data to the X-Ray daemon directly without using the X-Ray SDK.
+
+- AWS_XRAY_DEBUG_MODE is used to configure the SDK to output logs to the console without using a logging library.
+
+- AUTO_INSTRUMENT is primarily used in X-Ray SDK for Django Framework only. This allows the recording of subsegments for built-in database and template rendering operations.
+
 ## **Conclusion**
 AWS X-Ray empowers developers and DevOps teams to proactively monitor and optimize their applications, ultimately improving reliability and delivering better user experiences. By providing a detailed view of application performance, it enables businesses to swiftly identify and address issues, ensuring that their applications run smoothly even under high loads.
 
