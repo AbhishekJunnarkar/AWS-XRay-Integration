@@ -82,6 +82,20 @@ AWS Lambda uses environment variables to facilitate communication with the X-Ray
 
 - AUTO_INSTRUMENT is primarily used in X-Ray SDK for Django Framework only. This allows the recording of subsegments for built-in database and template rendering operations.
 
+## Annotations
+
+Annotations are simple key-value pairs that are indexed for use with filter expressions. Use annotations to record data that you want to use to group traces in the console, or when calling the GetTraceSummaries API.
+X-Ray indexes up to 50 annotations per trace.
+
+## Metadata 
+Metadata are key-value pairs with values of any type, including objects and lists, but that is not indexed. Use metadata to record data you want to store in the trace but don't need to use for searching traces.
+
+## Segments 
+The computing resources running your application logic send data about their work as segments. A segment provides the resource's name, details about the request, and details about the work done.
+
+## Sampling 
+To ensure efficient tracing and provide a representative sample of the requests that your application serves, the X-Ray SDK applies a sampling algorithm to determine which requests get traced. By default, the X-Ray SDK records the first request each second, and five percent of any additional requests.
+
 ## **Conclusion**
 AWS X-Ray empowers developers and DevOps teams to proactively monitor and optimize their applications, ultimately improving reliability and delivering better user experiences. By providing a detailed view of application performance, it enables businesses to swiftly identify and address issues, ensuring that their applications run smoothly even under high loads.
 
